@@ -1,0 +1,995 @@
+
+(base) C:\Users\ada> cd Downloads/Lab03
+
+(base) C:\Users\ada\Downloads\Lab03>python check_lab03.py
+PASS: five complete table definitions and column contract
+PASS: primary keys and scene/asset/request/run foreign keys
+PASS: AOI identity, uniqueness and allowed states
+FAIL: IntegrityError: CHECK constraint failed: stage IN (
+                       'cache_verify', 'read_window', 'write_subset', 'validate_subset',
+                       'before_finalize', 'finalize', 'register', 'complete')
+
+(base) C:\Users\ada\Downloads\Lab03>findstr /n /i "stage" check_lab03.py
+42:                reject(c,'orphan run',"INSERT INTO download_attempts(attempt_id,subset_id,run_id,status,stage,started_at,network_bytes) VALUES ('orphan',?,'missing','running','test',?,0)",(subset,store.now()))
+
+(base) C:\Users\ada\Downloads\Lab03>python check_lab03.py
+attempt=attempt-133364db-3240-4cd0-8496-5142d655c883 code=FILE_MISSING Recorded file is absent: real_red_aoi.tif
+attempt=attempt-4dc2ede7-9f26-4694-b7d5-d87a00af52ac code=FILE_CORRUPT Size/hash mismatch for real_red_aoi.tif
+PASS: five complete table definitions and column contract
+PASS: primary keys and scene/asset/request/run foreign keys
+PASS: AOI identity, uniqueness and allowed states
+PASS: attempt outcomes, timestamps and byte counts
+PASS: composite relationships prevent cross-AOI artifact references
+PASS: real-file verification, missing/corrupt diagnosis and preserved success history
+PASS: real B04/B08 grids, AOI masking, scale/offset and pixel cap
+PASS: server ignoring Range is refused without reading its body
+All checks used actual captured EO data; no live network requests were made.
+
+(base) C:\Users\ada\Downloads\Lab03>python lab03_cli.py init --config config/krakow_aoi.json
+{
+  "database": "C:\\Users\\ada\\Downloads\\Lab03\\state\\catalogue.sqlite",
+  "message": "New schema present; run check_lab03.py to verify its constraints"
+}
+
+(base) C:\Users\ada\Downloads\Lab03>python lab03_cli.py plan --config config/krakow_aoi.json
+{
+  "item_id": "S2C_34UDA_20250605_0_L2A",
+  "plans": [
+    {
+      "asset_key": "red",
+      "source_url": "https://sentinel-cogs.s3.us-west-2.amazonaws.com/sentinel-s2-l2a-cogs/34/U/DA/2025/6/S2C_34UDA_20250605_0_L2A/B04.tif",
+      "crs": "EPSG:32634",
+      "source_shape": [
+        10980,
+        10980
+      ],
+      "source_transform": [
+        10.0,
+        0.0,
+        399960.0,
+        0.0,
+        -10.0,
+        5600040.0
+      ],
+      "window": [
+        2198,
+        5416,
+        219,
+        227
+      ],
+      "shape": [
+        227,
+        219
+      ],
+      "transform": [
+        10.0,
+        0.0,
+        421940.0,
+        0.0,
+        -10.0,
+        5545880.0
+      ],
+      "dtype": "uint16",
+      "nodata": 0,
+      "scale": 0.0001,
+      "offset": -0.1,
+      "aoi_bbox": [
+        19.91,
+        50.04,
+        19.94,
+        50.06
+      ],
+      "recipe": "native10m-wgs84-mask-v1",
+      "raw_pixel_bytes": 99426
+    },
+    {
+      "asset_key": "nir",
+      "source_url": "https://sentinel-cogs.s3.us-west-2.amazonaws.com/sentinel-s2-l2a-cogs/34/U/DA/2025/6/S2C_34UDA_20250605_0_L2A/B08.tif",
+      "crs": "EPSG:32634",
+      "source_shape": [
+        10980,
+        10980
+      ],
+      "source_transform": [
+        10.0,
+        0.0,
+        399960.0,
+        0.0,
+        -10.0,
+        5600040.0
+      ],
+      "window": [
+        2198,
+        5416,
+        219,
+        227
+      ],
+      "shape": [
+        227,
+        219
+      ],
+      "transform": [
+        10.0,
+        0.0,
+        421940.0,
+        0.0,
+        -10.0,
+        5545880.0
+      ],
+      "dtype": "uint16",
+      "nodata": 0,
+      "scale": 0.0001,
+      "offset": -0.1,
+      "aoi_bbox": [
+        19.91,
+        50.04,
+        19.94,
+        50.06
+      ],
+      "recipe": "native10m-wgs84-mask-v1",
+      "raw_pixel_bytes": 99426
+    }
+  ],
+  "pair_raw_pixel_bytes": 198852,
+  "note": "Storage estimate is uncompressed pixel payload; HTTP ranges include complete source blocks"
+}
+
+(base) C:\Users\ada\Downloads\Lab03>python lab03_cli.py acquire --config config/krakow_aoi.json
+2026-11-12 17:58:45,054 INFO attempt=attempt-b353d180-6233-4baf-903d-74c16f7e4bbc band=red window=[2198, 5416, 219, 227] starting bounded ranges
+2026-11-12 17:58:53,146 INFO attempt=attempt-b353d180-6233-4baf-903d-74c16f7e4bbc succeeded network_bytes=2097153 saved_bytes=75792
+2026-11-12 17:58:53,162 INFO attempt=attempt-a9b82958-b9a1-4fb3-b587-c340620b461e band=nir window=[2198, 5416, 219, 227] starting bounded ranges
+2026-11-12 17:59:00,014 INFO attempt=attempt-a9b82958-b9a1-4fb3-b587-c340620b461e succeeded network_bytes=2097153 saved_bytes=76138
+{
+  "run_id": "lab03-9ddcc311-442f-48d9-8552-591d7e004681",
+  "status": "succeeded",
+  "outputs": [
+    {
+      "subset_id": "5462fd6b1d071487ebf4f9872da69c339ad7568e2b9bd923d7e7ad1e40fb2e2b",
+      "artifact_id": "59d7497b6d0acac9cc3d487175e8d2cbd5d8612fbd1a58b9e37d8eb83d7c06e1",
+      "path": "C:\\Users\\ada\\Downloads\\Lab03\\data\\S2C_34UDA_20250605_0_L2A\\48e7066dc251\\red-59d7497b6d0acac9.tif",
+      "outcome": "succeeded",
+      "network_bytes": 2097153,
+      "saved_bytes": 75792
+    },
+    {
+      "subset_id": "f66f860d150ad4f0a41201bad30d12ab8f99fee60a4d3d25810569c6d44c6f0e",
+      "artifact_id": "fca9fc0ea7e68ceff3015929352513dbcdd0d9a9d9e5d75cb90ca393bc502adb",
+      "path": "C:\\Users\\ada\\Downloads\\Lab03\\data\\S2C_34UDA_20250605_0_L2A\\48e7066dc251\\nir-fca9fc0ea7e68cef.tif",
+      "outcome": "succeeded",
+      "network_bytes": 2097153,
+      "saved_bytes": 76138
+    }
+  ]
+}
+
+(base) C:\Users\ada\Downloads\Lab03>python lab03_cli.py report --config config/krakow_aoi.json
+{
+  "database": "C:\\Users\\ada\\Downloads\\Lab03\\state\\catalogue.sqlite",
+  "attempts": [
+    {
+      "attempt_id": "attempt-b353d180-6233-4baf-903d-74c16f7e4bbc",
+      "run_id": "lab03-9ddcc311-442f-48d9-8552-591d7e004681",
+      "item_id": "S2C_34UDA_20250605_0_L2A",
+      "asset_key": "red",
+      "aoi_key": "48e7066dc2510b10454cbc305c90ecb47f71c0966d733d6ab4ec2630c8745724",
+      "status": "succeeded",
+      "stage": "complete",
+      "network_bytes": 2097153,
+      "http_status": 206,
+      "error_code": null,
+      "error_message": null,
+      "artifact_id": "59d7497b6d0acac9cc3d487175e8d2cbd5d8612fbd1a58b9e37d8eb83d7c06e1",
+      "started_at": "2026-11-12T16:58:45.049805Z"
+    },
+    {
+      "attempt_id": "attempt-a9b82958-b9a1-4fb3-b587-c340620b461e",
+      "run_id": "lab03-9ddcc311-442f-48d9-8552-591d7e004681",
+      "item_id": "S2C_34UDA_20250605_0_L2A",
+      "asset_key": "nir",
+      "aoi_key": "48e7066dc2510b10454cbc305c90ecb47f71c0966d733d6ab4ec2630c8745724",
+      "status": "succeeded",
+      "stage": "complete",
+      "network_bytes": 2097153,
+      "http_status": 206,
+      "error_code": null,
+      "error_message": null,
+      "artifact_id": "fca9fc0ea7e68ceff3015929352513dbcdd0d9a9d9e5d75cb90ca393bc502adb",
+      "started_at": "2026-11-12T16:58:53.156746Z"
+    }
+  ],
+  "subsets": [
+    {
+      "subset_id": "5462fd6b1d071487ebf4f9872da69c339ad7568e2b9bd923d7e7ad1e40fb2e2b",
+      "asset_id": "d200bd3f0222f2ffeb3048b0ecf35731181a9b5eca9c66f280d9af95bfbad5a2",
+      "aoi_key": "48e7066dc2510b10454cbc305c90ecb47f71c0966d733d6ab4ec2630c8745724",
+      "status": "ready",
+      "latest_artifact_id": "59d7497b6d0acac9cc3d487175e8d2cbd5d8612fbd1a58b9e37d8eb83d7c06e1"
+    },
+    {
+      "subset_id": "f66f860d150ad4f0a41201bad30d12ab8f99fee60a4d3d25810569c6d44c6f0e",
+      "asset_id": "a2d220b3d0db776bd878281b88dd3d085be4ddc78042674be044110f202bdff8",
+      "aoi_key": "48e7066dc2510b10454cbc305c90ecb47f71c0966d733d6ab4ec2630c8745724",
+      "status": "ready",
+      "latest_artifact_id": "fca9fc0ea7e68ceff3015929352513dbcdd0d9a9d9e5d75cb90ca393bc502adb"
+    }
+  ],
+  "locations": [
+    {
+      "location_id": "2c7292fe14e6a79d2be4cd5ae484efaa603e79b15f2fdecbb8e3ed2a5b305418",
+      "artifact_id": "59d7497b6d0acac9cc3d487175e8d2cbd5d8612fbd1a58b9e37d8eb83d7c06e1",
+      "local_path": "C:\\Users\\ada\\Downloads\\Lab03\\data\\S2C_34UDA_20250605_0_L2A\\48e7066dc251\\red-59d7497b6d0acac9.tif",
+      "status": "available",
+      "checked_at": "2026-11-12T16:58:53.143005Z"
+    },
+    {
+      "location_id": "2c3b4bcad84003122732b2dcc6ab6dc2de17018a8c60328eaa9081b0bb66ac9b",
+      "artifact_id": "fca9fc0ea7e68ceff3015929352513dbcdd0d9a9d9e5d75cb90ca393bc502adb",
+      "local_path": "C:\\Users\\ada\\Downloads\\Lab03\\data\\S2C_34UDA_20250605_0_L2A\\48e7066dc251\\nir-fca9fc0ea7e68cef.tif",
+      "status": "available",
+      "checked_at": "2026-11-12T16:59:00.010948Z"
+    }
+  ],
+  "runs": [
+    {
+      "run_id": "lab03-9ddcc311-442f-48d9-8552-591d7e004681",
+      "command": "acquire",
+      "status": "succeeded",
+      "error": null,
+      "started_at": "2026-11-12T16:58:45.007333Z"
+    }
+  ]
+}
+
+(base) C:\Users\ada\Downloads\Lab03>python lab03_cli.py discover --config config/krakow_aoi.json
+2026-11-12 18:00:21,117 INFO run=02a37df7-a88b-48c1-afb6-687e8f2dac52 search=2026-09-21T00:00:00Z/2026-11-12T17:00:21.111127Z
+2026-11-12 18:00:22,042 INFO run=02a37df7-a88b-48c1-afb6-687e8f2dac52 committed_page=1 sightings=20
+2026-11-12 18:00:24,116 INFO run=02a37df7-a88b-48c1-afb6-687e8f2dac52 committed_page=2 sightings=40
+2026-11-12 18:00:25,516 INFO run=02a37df7-a88b-48c1-afb6-687e8f2dac52 committed_page=3 sightings=60
+2026-11-12 18:00:26,131 INFO run=02a37df7-a88b-48c1-afb6-687e8f2dac52 committed_page=4 sightings=60
+2026-11-12 18:00:26,153 INFO run=02a37df7-a88b-48c1-afb6-687e8f2dac52 succeeded new_scenes=60 sightings=60 latest=2026-11-12T09:56:44.803000Z
+{
+  "run_id": "02a37df7-a88b-48c1-afb6-687e8f2dac52",
+  "stream_key": "9ae6b6299dd613ee619b8bb36c584f70051bb153fd582d37bc644c3ca29a0420",
+  "started_at": "2026-11-12T17:00:21.112589Z",
+  "finished_at": "2026-11-12T17:00:26.150286Z",
+  "status": "succeeded",
+  "search_start": "2026-09-21T00:00:00Z",
+  "search_until": "2026-11-12T17:00:21.111127Z",
+  "pages": 4,
+  "sightings": 60,
+  "new_scenes": 60,
+  "latest_acquired": "2026-11-12T09:56:44.803000Z",
+  "preview_item": null,
+  "preview_path": null,
+  "error": null,
+  "command": "discover",
+  "config_json": "{}"
+}
+
+(base) C:\Users\ada\Downloads\Lab03>   python lab03_cli.py plan --config config/krakow_aoi.json
+{
+  "item_id": "S2C_34UDA_20250605_0_L2A",
+  "plans": [
+    {
+      "asset_key": "red",
+      "source_url": "https://sentinel-cogs.s3.us-west-2.amazonaws.com/sentinel-s2-l2a-cogs/34/U/DA/2025/6/S2C_34UDA_20250605_0_L2A/B04.tif",
+      "crs": "EPSG:32634",
+      "source_shape": [
+        10980,
+        10980
+      ],
+      "source_transform": [
+        10.0,
+        0.0,
+        399960.0,
+        0.0,
+        -10.0,
+        5600040.0
+      ],
+      "window": [
+        2198,
+        5416,
+        219,
+        227
+      ],
+      "shape": [
+        227,
+        219
+      ],
+      "transform": [
+        10.0,
+        0.0,
+        421940.0,
+        0.0,
+        -10.0,
+        5545880.0
+      ],
+      "dtype": "uint16",
+      "nodata": 0,
+      "scale": 0.0001,
+      "offset": -0.1,
+      "aoi_bbox": [
+        19.91,
+        50.04,
+        19.94,
+        50.06
+      ],
+      "recipe": "native10m-wgs84-mask-v1",
+      "raw_pixel_bytes": 99426
+    },
+    {
+      "asset_key": "nir",
+      "source_url": "https://sentinel-cogs.s3.us-west-2.amazonaws.com/sentinel-s2-l2a-cogs/34/U/DA/2025/6/S2C_34UDA_20250605_0_L2A/B08.tif",
+      "crs": "EPSG:32634",
+      "source_shape": [
+        10980,
+        10980
+      ],
+      "source_transform": [
+        10.0,
+        0.0,
+        399960.0,
+        0.0,
+        -10.0,
+        5600040.0
+      ],
+      "window": [
+        2198,
+        5416,
+        219,
+        227
+      ],
+      "shape": [
+        227,
+        219
+      ],
+      "transform": [
+        10.0,
+        0.0,
+        421940.0,
+        0.0,
+        -10.0,
+        5545880.0
+      ],
+      "dtype": "uint16",
+      "nodata": 0,
+      "scale": 0.0001,
+      "offset": -0.1,
+      "aoi_bbox": [
+        19.91,
+        50.04,
+        19.94,
+        50.06
+      ],
+      "recipe": "native10m-wgs84-mask-v1",
+      "raw_pixel_bytes": 99426
+    }
+  ],
+  "pair_raw_pixel_bytes": 198852,
+  "note": "Storage estimate is uncompressed pixel payload; HTTP ranges include complete source blocks"
+}
+
+(base) C:\Users\ada\Downloads\Lab03>   python lab03_cli.py report --config config/krakow_aoi.json
+{
+  "database": "C:\\Users\\ada\\Downloads\\Lab03\\state\\catalogue.sqlite",
+  "attempts": [
+    {
+      "attempt_id": "attempt-b353d180-6233-4baf-903d-74c16f7e4bbc",
+      "run_id": "lab03-9ddcc311-442f-48d9-8552-591d7e004681",
+      "item_id": "S2C_34UDA_20250605_0_L2A",
+      "asset_key": "red",
+      "aoi_key": "48e7066dc2510b10454cbc305c90ecb47f71c0966d733d6ab4ec2630c8745724",
+      "status": "succeeded",
+      "stage": "complete",
+      "network_bytes": 2097153,
+      "http_status": 206,
+      "error_code": null,
+      "error_message": null,
+      "artifact_id": "59d7497b6d0acac9cc3d487175e8d2cbd5d8612fbd1a58b9e37d8eb83d7c06e1",
+      "started_at": "2026-11-12T16:58:45.049805Z"
+    },
+    {
+      "attempt_id": "attempt-a9b82958-b9a1-4fb3-b587-c340620b461e",
+      "run_id": "lab03-9ddcc311-442f-48d9-8552-591d7e004681",
+      "item_id": "S2C_34UDA_20250605_0_L2A",
+      "asset_key": "nir",
+      "aoi_key": "48e7066dc2510b10454cbc305c90ecb47f71c0966d733d6ab4ec2630c8745724",
+      "status": "succeeded",
+      "stage": "complete",
+      "network_bytes": 2097153,
+      "http_status": 206,
+      "error_code": null,
+      "error_message": null,
+      "artifact_id": "fca9fc0ea7e68ceff3015929352513dbcdd0d9a9d9e5d75cb90ca393bc502adb",
+      "started_at": "2026-11-12T16:58:53.156746Z"
+    }
+  ],
+  "subsets": [
+    {
+      "subset_id": "5462fd6b1d071487ebf4f9872da69c339ad7568e2b9bd923d7e7ad1e40fb2e2b",
+      "asset_id": "d200bd3f0222f2ffeb3048b0ecf35731181a9b5eca9c66f280d9af95bfbad5a2",
+      "aoi_key": "48e7066dc2510b10454cbc305c90ecb47f71c0966d733d6ab4ec2630c8745724",
+      "status": "ready",
+      "latest_artifact_id": "59d7497b6d0acac9cc3d487175e8d2cbd5d8612fbd1a58b9e37d8eb83d7c06e1"
+    },
+    {
+      "subset_id": "f66f860d150ad4f0a41201bad30d12ab8f99fee60a4d3d25810569c6d44c6f0e",
+      "asset_id": "a2d220b3d0db776bd878281b88dd3d085be4ddc78042674be044110f202bdff8",
+      "aoi_key": "48e7066dc2510b10454cbc305c90ecb47f71c0966d733d6ab4ec2630c8745724",
+      "status": "ready",
+      "latest_artifact_id": "fca9fc0ea7e68ceff3015929352513dbcdd0d9a9d9e5d75cb90ca393bc502adb"
+    }
+  ],
+  "locations": [
+    {
+      "location_id": "2c7292fe14e6a79d2be4cd5ae484efaa603e79b15f2fdecbb8e3ed2a5b305418",
+      "artifact_id": "59d7497b6d0acac9cc3d487175e8d2cbd5d8612fbd1a58b9e37d8eb83d7c06e1",
+      "local_path": "C:\\Users\\ada\\Downloads\\Lab03\\data\\S2C_34UDA_20250605_0_L2A\\48e7066dc251\\red-59d7497b6d0acac9.tif",
+      "status": "available",
+      "checked_at": "2026-11-12T16:58:53.143005Z"
+    },
+    {
+      "location_id": "2c3b4bcad84003122732b2dcc6ab6dc2de17018a8c60328eaa9081b0bb66ac9b",
+      "artifact_id": "fca9fc0ea7e68ceff3015929352513dbcdd0d9a9d9e5d75cb90ca393bc502adb",
+      "local_path": "C:\\Users\\ada\\Downloads\\Lab03\\data\\S2C_34UDA_20250605_0_L2A\\48e7066dc251\\nir-fca9fc0ea7e68cef.tif",
+      "status": "available",
+      "checked_at": "2026-11-12T16:59:00.010948Z"
+    }
+  ],
+  "runs": [
+    {
+      "run_id": "lab03-9ddcc311-442f-48d9-8552-591d7e004681",
+      "command": "acquire",
+      "status": "succeeded",
+      "error": null,
+      "started_at": "2026-11-12T16:58:45.007333Z"
+    }
+  ]
+}
+
+(base) C:\Users\ada\Downloads\Lab03>python lab03_cli.py case --config config/krakow_aoi.json --name network
+Case configuration: C:\Users\ada\Downloads\Lab03\cases\network\config.json
+2026-11-12 18:21:14,567 INFO attempt=attempt-5dc53617-555a-4a09-b5ff-9fae74eaebd0 band=red window=[2198, 5416, 219, 227] starting bounded ranges
+2026-11-12 18:21:22,949 INFO attempt=attempt-5dc53617-555a-4a09-b5ff-9fae74eaebd0 succeeded network_bytes=2097153 saved_bytes=75792
+2026-11-12 18:21:22,962 INFO attempt=attempt-d5cfe10e-7b67-4447-9784-5fe65b5f87ea band=nir window=[2198, 5416, 219, 227] starting bounded ranges
+2026-11-12 18:21:25,699 ERROR run=lab03-57273a9f-1412-4528-bc28-a9982b1727d0 failed: Controlled network interruption after actual range responses
+2026-11-12 18:21:25,699 ERROR RangeFailure: Controlled network interruption after actual range responses
+{
+  "status": "failed",
+  "error": "RangeFailure: Controlled network interruption after actual range responses"
+}
+
+(base) C:\Users\ada\Downloads\Lab03>python lab03_cli.py report --config cases/network/config.json
+{
+  "database": "C:\\Users\\ada\\Downloads\\Lab03\\cases\\network\\state\\catalogue.sqlite",
+  "attempts": [
+    {
+      "attempt_id": "attempt-5dc53617-555a-4a09-b5ff-9fae74eaebd0",
+      "run_id": "lab03-57273a9f-1412-4528-bc28-a9982b1727d0",
+      "item_id": "S2C_34UDA_20250605_0_L2A",
+      "asset_key": "red",
+      "aoi_key": "48e7066dc2510b10454cbc305c90ecb47f71c0966d733d6ab4ec2630c8745724",
+      "status": "succeeded",
+      "stage": "complete",
+      "network_bytes": 2097153,
+      "http_status": 206,
+      "error_code": null,
+      "error_message": null,
+      "artifact_id": "59d7497b6d0acac9cc3d487175e8d2cbd5d8612fbd1a58b9e37d8eb83d7c06e1",
+      "started_at": "2026-11-12T17:21:14.560549Z"
+    },
+    {
+      "attempt_id": "attempt-d5cfe10e-7b67-4447-9784-5fe65b5f87ea",
+      "run_id": "lab03-57273a9f-1412-4528-bc28-a9982b1727d0",
+      "item_id": "S2C_34UDA_20250605_0_L2A",
+      "asset_key": "nir",
+      "aoi_key": "48e7066dc2510b10454cbc305c90ecb47f71c0966d733d6ab4ec2630c8745724",
+      "status": "failed",
+      "stage": "read_window",
+      "network_bytes": 262145,
+      "http_status": 206,
+      "error_code": "RANGE_READ_FAILED",
+      "error_message": "Controlled network interruption after actual range responses",
+      "artifact_id": null,
+      "started_at": "2026-11-12T17:21:22.957312Z"
+    }
+  ],
+  "subsets": [
+    {
+      "subset_id": "5462fd6b1d071487ebf4f9872da69c339ad7568e2b9bd923d7e7ad1e40fb2e2b",
+      "asset_id": "d200bd3f0222f2ffeb3048b0ecf35731181a9b5eca9c66f280d9af95bfbad5a2",
+      "aoi_key": "48e7066dc2510b10454cbc305c90ecb47f71c0966d733d6ab4ec2630c8745724",
+      "status": "ready",
+      "latest_artifact_id": "59d7497b6d0acac9cc3d487175e8d2cbd5d8612fbd1a58b9e37d8eb83d7c06e1"
+    },
+    {
+      "subset_id": "f66f860d150ad4f0a41201bad30d12ab8f99fee60a4d3d25810569c6d44c6f0e",
+      "asset_id": "a2d220b3d0db776bd878281b88dd3d085be4ddc78042674be044110f202bdff8",
+      "aoi_key": "48e7066dc2510b10454cbc305c90ecb47f71c0966d733d6ab4ec2630c8745724",
+      "status": "failed",
+      "latest_artifact_id": null
+    }
+  ],
+  "locations": [
+    {
+      "location_id": "c91ac41e457ff6ee4511a6e695d4fa6a1c22e35cc3d8781640c11642de305a89",
+      "artifact_id": "59d7497b6d0acac9cc3d487175e8d2cbd5d8612fbd1a58b9e37d8eb83d7c06e1",
+      "local_path": "C:\\Users\\ada\\Downloads\\Lab03\\cases\\network\\data\\S2C_34UDA_20250605_0_L2A\\48e7066dc251\\red-59d7497b6d0acac9.tif",
+      "status": "available",
+      "checked_at": "2026-11-12T17:21:22.945293Z"
+    }
+  ],
+  "runs": [
+    {
+      "run_id": "lab03-57273a9f-1412-4528-bc28-a9982b1727d0",
+      "command": "acquire",
+      "status": "failed",
+      "error": "Controlled network interruption after actual range responses",
+      "started_at": "2026-11-12T17:21:14.515429Z"
+    }
+  ]
+}
+
+(base) C:\Users\ada\Downloads\Lab03>python lab03_cli.py acquire --config cases/network/config.json
+2026-11-12 18:22:53,470 INFO attempt=attempt-c893b7b6-ce85-4676-9598-738d546e1174 band=nir window=[2198, 5416, 219, 227] starting bounded ranges
+2026-11-12 18:23:09,558 INFO attempt=attempt-c893b7b6-ce85-4676-9598-738d546e1174 succeeded network_bytes=2097153 saved_bytes=76138
+{
+  "run_id": "lab03-f6858131-8b06-46ba-a2c3-6ae1b0060dc2",
+  "status": "succeeded",
+  "outputs": [
+    {
+      "subset_id": "5462fd6b1d071487ebf4f9872da69c339ad7568e2b9bd923d7e7ad1e40fb2e2b",
+      "artifact_id": "59d7497b6d0acac9cc3d487175e8d2cbd5d8612fbd1a58b9e37d8eb83d7c06e1",
+      "path": "C:\\Users\\ada\\Downloads\\Lab03\\cases\\network\\data\\S2C_34UDA_20250605_0_L2A\\48e7066dc251\\red-59d7497b6d0acac9.tif",
+      "outcome": "reused",
+      "network_bytes": 0
+    },
+    {
+      "subset_id": "f66f860d150ad4f0a41201bad30d12ab8f99fee60a4d3d25810569c6d44c6f0e",
+      "artifact_id": "fca9fc0ea7e68ceff3015929352513dbcdd0d9a9d9e5d75cb90ca393bc502adb",
+      "path": "C:\\Users\\ada\\Downloads\\Lab03\\cases\\network\\data\\S2C_34UDA_20250605_0_L2A\\48e7066dc251\\nir-fca9fc0ea7e68cef.tif",
+      "outcome": "succeeded",
+      "network_bytes": 2097153,
+      "saved_bytes": 76138
+    }
+  ]
+}
+
+(base) C:\Users\ada\Downloads\Lab03>python lab03_cli.py report --config cases/network/config.json
+{
+  "database": "C:\\Users\\ada\\Downloads\\Lab03\\cases\\network\\state\\catalogue.sqlite",
+  "attempts": [
+    {
+      "attempt_id": "attempt-5dc53617-555a-4a09-b5ff-9fae74eaebd0",
+      "run_id": "lab03-57273a9f-1412-4528-bc28-a9982b1727d0",
+      "item_id": "S2C_34UDA_20250605_0_L2A",
+      "asset_key": "red",
+      "aoi_key": "48e7066dc2510b10454cbc305c90ecb47f71c0966d733d6ab4ec2630c8745724",
+      "status": "succeeded",
+      "stage": "complete",
+      "network_bytes": 2097153,
+      "http_status": 206,
+      "error_code": null,
+      "error_message": null,
+      "artifact_id": "59d7497b6d0acac9cc3d487175e8d2cbd5d8612fbd1a58b9e37d8eb83d7c06e1",
+      "started_at": "2026-11-12T17:21:14.560549Z"
+    },
+    {
+      "attempt_id": "attempt-d5cfe10e-7b67-4447-9784-5fe65b5f87ea",
+      "run_id": "lab03-57273a9f-1412-4528-bc28-a9982b1727d0",
+      "item_id": "S2C_34UDA_20250605_0_L2A",
+      "asset_key": "nir",
+      "aoi_key": "48e7066dc2510b10454cbc305c90ecb47f71c0966d733d6ab4ec2630c8745724",
+      "status": "failed",
+      "stage": "read_window",
+      "network_bytes": 262145,
+      "http_status": 206,
+      "error_code": "RANGE_READ_FAILED",
+      "error_message": "Controlled network interruption after actual range responses",
+      "artifact_id": null,
+      "started_at": "2026-11-12T17:21:22.957312Z"
+    },
+    {
+      "attempt_id": "attempt-8aba13dd-be1c-4893-9800-2899fb7ad5bb",
+      "run_id": "lab03-f6858131-8b06-46ba-a2c3-6ae1b0060dc2",
+      "item_id": "S2C_34UDA_20250605_0_L2A",
+      "asset_key": "red",
+      "aoi_key": "48e7066dc2510b10454cbc305c90ecb47f71c0966d733d6ab4ec2630c8745724",
+      "status": "reused",
+      "stage": "cache_verify",
+      "network_bytes": 0,
+      "http_status": null,
+      "error_code": null,
+      "error_message": null,
+      "artifact_id": "59d7497b6d0acac9cc3d487175e8d2cbd5d8612fbd1a58b9e37d8eb83d7c06e1",
+      "started_at": "2026-11-12T17:22:53.323890Z"
+    },
+    {
+      "attempt_id": "attempt-c893b7b6-ce85-4676-9598-738d546e1174",
+      "run_id": "lab03-f6858131-8b06-46ba-a2c3-6ae1b0060dc2",
+      "item_id": "S2C_34UDA_20250605_0_L2A",
+      "asset_key": "nir",
+      "aoi_key": "48e7066dc2510b10454cbc305c90ecb47f71c0966d733d6ab4ec2630c8745724",
+      "status": "succeeded",
+      "stage": "complete",
+      "network_bytes": 2097153,
+      "http_status": 206,
+      "error_code": null,
+      "error_message": null,
+      "artifact_id": "fca9fc0ea7e68ceff3015929352513dbcdd0d9a9d9e5d75cb90ca393bc502adb",
+      "started_at": "2026-11-12T17:22:53.466326Z"
+    }
+  ],
+  "subsets": [
+    {
+      "subset_id": "5462fd6b1d071487ebf4f9872da69c339ad7568e2b9bd923d7e7ad1e40fb2e2b",
+      "asset_id": "d200bd3f0222f2ffeb3048b0ecf35731181a9b5eca9c66f280d9af95bfbad5a2",
+      "aoi_key": "48e7066dc2510b10454cbc305c90ecb47f71c0966d733d6ab4ec2630c8745724",
+      "status": "ready",
+      "latest_artifact_id": "59d7497b6d0acac9cc3d487175e8d2cbd5d8612fbd1a58b9e37d8eb83d7c06e1"
+    },
+    {
+      "subset_id": "f66f860d150ad4f0a41201bad30d12ab8f99fee60a4d3d25810569c6d44c6f0e",
+      "asset_id": "a2d220b3d0db776bd878281b88dd3d085be4ddc78042674be044110f202bdff8",
+      "aoi_key": "48e7066dc2510b10454cbc305c90ecb47f71c0966d733d6ab4ec2630c8745724",
+      "status": "ready",
+      "latest_artifact_id": "fca9fc0ea7e68ceff3015929352513dbcdd0d9a9d9e5d75cb90ca393bc502adb"
+    }
+  ],
+  "locations": [
+    {
+      "location_id": "c91ac41e457ff6ee4511a6e695d4fa6a1c22e35cc3d8781640c11642de305a89",
+      "artifact_id": "59d7497b6d0acac9cc3d487175e8d2cbd5d8612fbd1a58b9e37d8eb83d7c06e1",
+      "local_path": "C:\\Users\\ada\\Downloads\\Lab03\\cases\\network\\data\\S2C_34UDA_20250605_0_L2A\\48e7066dc251\\red-59d7497b6d0acac9.tif",
+      "status": "available",
+      "checked_at": "2026-11-12T17:22:53.456675Z"
+    },
+    {
+      "location_id": "f17608b1982f207aae710953faaa71b474113c9ff0607ee16fd7f404f8e1f174",
+      "artifact_id": "fca9fc0ea7e68ceff3015929352513dbcdd0d9a9d9e5d75cb90ca393bc502adb",
+      "local_path": "C:\\Users\\ada\\Downloads\\Lab03\\cases\\network\\data\\S2C_34UDA_20250605_0_L2A\\48e7066dc251\\nir-fca9fc0ea7e68cef.tif",
+      "status": "available",
+      "checked_at": "2026-11-12T17:23:09.554803Z"
+    }
+  ],
+  "runs": [
+    {
+      "run_id": "lab03-57273a9f-1412-4528-bc28-a9982b1727d0",
+      "command": "acquire",
+      "status": "failed",
+      "error": "Controlled network interruption after actual range responses",
+      "started_at": "2026-11-12T17:21:14.515429Z"
+    },
+    {
+      "run_id": "lab03-f6858131-8b06-46ba-a2c3-6ae1b0060dc2",
+      "command": "acquire",
+      "status": "succeeded",
+      "error": null,
+      "started_at": "2026-11-12T17:22:53.222598Z"
+    }
+  ]
+}
+
+(base) C:\Users\ada\Downloads\Lab03>python lab03_cli.py case --config config/krakow_aoi.json --name missing
+Case configuration: C:\Users\ada\Downloads\Lab03\cases\missing\config.json
+2026-11-12 18:24:36,236 INFO attempt=attempt-10f6315f-db74-4299-aeaa-e1652803dc21 band=red window=[2198, 5416, 219, 227] starting bounded ranges
+2026-11-12 18:24:47,147 INFO attempt=attempt-10f6315f-db74-4299-aeaa-e1652803dc21 succeeded network_bytes=2097153 saved_bytes=75792
+2026-11-12 18:24:47,161 INFO attempt=attempt-b769c8ef-87d6-480b-bd8b-71efd494ed47 band=nir window=[2198, 5416, 219, 227] starting bounded ranges
+2026-11-12 18:25:01,708 INFO attempt=attempt-b769c8ef-87d6-480b-bd8b-71efd494ed47 succeeded network_bytes=2097153 saved_bytes=76138
+2026-11-12 18:25:01,742 WARNING attempt=attempt-fa944658-658a-4236-a2e9-13cff4e40758 code=FILE_MISSING Recorded file is absent: red-59d7497b6d0acac9.tif
+2026-11-12 18:25:01,766 ERROR run=lab03-31f5127d-38c0-4fde-9b2d-afb176b26348 failed: One or more subsets are missing or invalid; inspect history and rerun acquire
+2026-11-12 18:25:01,767 ERROR ValueError: One or more subsets are missing or invalid; inspect historyand rerun acquire
+{
+  "status": "failed",
+  "error": "ValueError: One or more subsets are missing or invalid; inspect history and rerun acquire"
+}
+
+(base) C:\Users\ada\Downloads\Lab03>python lab03_cli.py report --config cases/missing/config.json
+{
+  "database": "C:\\Users\\ada\\Downloads\\Lab03\\cases\\missing\\state\\catalogue.sqlite",
+  "attempts": [
+    {
+      "attempt_id": "attempt-10f6315f-db74-4299-aeaa-e1652803dc21",
+      "run_id": "lab03-b06d82f0-c96d-4993-9a26-3241adf8995d",
+      "item_id": "S2C_34UDA_20250605_0_L2A",
+      "asset_key": "red",
+      "aoi_key": "48e7066dc2510b10454cbc305c90ecb47f71c0966d733d6ab4ec2630c8745724",
+      "status": "succeeded",
+      "stage": "complete",
+      "network_bytes": 2097153,
+      "http_status": 206,
+      "error_code": null,
+      "error_message": null,
+      "artifact_id": "59d7497b6d0acac9cc3d487175e8d2cbd5d8612fbd1a58b9e37d8eb83d7c06e1",
+      "started_at": "2026-11-12T17:24:36.232019Z"
+    },
+    {
+      "attempt_id": "attempt-b769c8ef-87d6-480b-bd8b-71efd494ed47",
+      "run_id": "lab03-b06d82f0-c96d-4993-9a26-3241adf8995d",
+      "item_id": "S2C_34UDA_20250605_0_L2A",
+      "asset_key": "nir",
+      "aoi_key": "48e7066dc2510b10454cbc305c90ecb47f71c0966d733d6ab4ec2630c8745724",
+      "status": "succeeded",
+      "stage": "complete",
+      "network_bytes": 2097153,
+      "http_status": 206,
+      "error_code": null,
+      "error_message": null,
+      "artifact_id": "fca9fc0ea7e68ceff3015929352513dbcdd0d9a9d9e5d75cb90ca393bc502adb",
+      "started_at": "2026-11-12T17:24:47.155915Z"
+    },
+    {
+      "attempt_id": "attempt-fa944658-658a-4236-a2e9-13cff4e40758",
+      "run_id": "lab03-31f5127d-38c0-4fde-9b2d-afb176b26348",
+      "item_id": "S2C_34UDA_20250605_0_L2A",
+      "asset_key": "red",
+      "aoi_key": "48e7066dc2510b10454cbc305c90ecb47f71c0966d733d6ab4ec2630c8745724",
+      "status": "failed",
+      "stage": "cache_verify",
+      "network_bytes": 0,
+      "http_status": null,
+      "error_code": "FILE_MISSING",
+      "error_message": "Recorded file is absent: red-59d7497b6d0acac9.tif",
+      "artifact_id": "59d7497b6d0acac9cc3d487175e8d2cbd5d8612fbd1a58b9e37d8eb83d7c06e1",
+      "started_at": "2026-11-12T17:25:01.729722Z"
+    },
+    {
+      "attempt_id": "attempt-d6f4fdbe-721f-488f-aa76-7497661f7662",
+      "run_id": "lab03-31f5127d-38c0-4fde-9b2d-afb176b26348",
+      "item_id": "S2C_34UDA_20250605_0_L2A",
+      "asset_key": "nir",
+      "aoi_key": "48e7066dc2510b10454cbc305c90ecb47f71c0966d733d6ab4ec2630c8745724",
+      "status": "reused",
+      "stage": "cache_verify",
+      "network_bytes": 0,
+      "http_status": null,
+      "error_code": null,
+      "error_message": null,
+      "artifact_id": "fca9fc0ea7e68ceff3015929352513dbcdd0d9a9d9e5d75cb90ca393bc502adb",
+      "started_at": "2026-11-12T17:25:01.743815Z"
+    }
+  ],
+  "subsets": [
+    {
+      "subset_id": "5462fd6b1d071487ebf4f9872da69c339ad7568e2b9bd923d7e7ad1e40fb2e2b",
+      "asset_id": "d200bd3f0222f2ffeb3048b0ecf35731181a9b5eca9c66f280d9af95bfbad5a2",
+      "aoi_key": "48e7066dc2510b10454cbc305c90ecb47f71c0966d733d6ab4ec2630c8745724",
+      "status": "failed",
+      "latest_artifact_id": "59d7497b6d0acac9cc3d487175e8d2cbd5d8612fbd1a58b9e37d8eb83d7c06e1"
+    },
+    {
+      "subset_id": "f66f860d150ad4f0a41201bad30d12ab8f99fee60a4d3d25810569c6d44c6f0e",
+      "asset_id": "a2d220b3d0db776bd878281b88dd3d085be4ddc78042674be044110f202bdff8",
+      "aoi_key": "48e7066dc2510b10454cbc305c90ecb47f71c0966d733d6ab4ec2630c8745724",
+      "status": "ready",
+      "latest_artifact_id": "fca9fc0ea7e68ceff3015929352513dbcdd0d9a9d9e5d75cb90ca393bc502adb"
+    }
+  ],
+  "locations": [
+    {
+      "location_id": "629cba05b04c125e8e7c56d43019af96286b42d66b8bf0e55ad9d30cd33bf77f",
+      "artifact_id": "59d7497b6d0acac9cc3d487175e8d2cbd5d8612fbd1a58b9e37d8eb83d7c06e1",
+      "local_path": "C:\\Users\\ada\\Downloads\\Lab03\\cases\\missing\\data\\S2C_34UDA_20250605_0_L2A\\48e7066dc251\\red-59d7497b6d0acac9.tif",
+      "status": "missing",
+      "checked_at": "2026-11-12T17:25:01.735657Z"
+    },
+    {
+      "location_id": "8c4afeb47dfde49c7c3d00cde21e9426e0d11c0540397ab503e0a800c9a6fa3e",
+      "artifact_id": "fca9fc0ea7e68ceff3015929352513dbcdd0d9a9d9e5d75cb90ca393bc502adb",
+      "local_path": "C:\\Users\\ada\\Downloads\\Lab03\\cases\\missing\\data\\S2C_34UDA_20250605_0_L2A\\48e7066dc251\\nir-fca9fc0ea7e68cef.tif",
+      "status": "available",
+      "checked_at": "2026-11-12T17:25:01.753676Z"
+    }
+  ],
+  "runs": [
+    {
+      "run_id": "lab03-b06d82f0-c96d-4993-9a26-3241adf8995d",
+      "command": "acquire",
+      "status": "succeeded",
+      "error": null,
+      "started_at": "2026-11-12T17:24:36.189543Z"
+    },
+    {
+      "run_id": "lab03-31f5127d-38c0-4fde-9b2d-afb176b26348",
+      "command": "verify",
+      "status": "failed",
+      "error": "One or more subsets are missing or invalid; inspect history and rerun acquire",
+      "started_at": "2026-11-12T17:25:01.718030Z"
+    }
+  ]
+}
+
+(base) C:\Users\ada\Downloads\Lab03>python lab03_cli.py acquire --config cases/missing/config.json
+2026-11-12 18:25:34,075 WARNING attempt=attempt-05dd38f7-2fce-4b29-9de4-f835bb42e42f code=FILE_MISSING Recorded file is absent: red-59d7497b6d0acac9.tif
+2026-11-12 18:25:34,083 INFO attempt=attempt-ffd4271e-78ee-4022-853f-3d9528b2ad3e band=red window=[2198, 5416, 219, 227] starting bounded ranges
+2026-11-12 18:25:41,653 INFO attempt=attempt-ffd4271e-78ee-4022-853f-3d9528b2ad3e succeeded network_bytes=2097153 saved_bytes=75792
+{
+  "run_id": "lab03-23a1d8a6-ef3a-4a37-9db5-2c065c4e5ef0",
+  "status": "succeeded",
+  "outputs": [
+    {
+      "subset_id": "5462fd6b1d071487ebf4f9872da69c339ad7568e2b9bd923d7e7ad1e40fb2e2b",
+      "artifact_id": "59d7497b6d0acac9cc3d487175e8d2cbd5d8612fbd1a58b9e37d8eb83d7c06e1",
+      "path": "C:\\Users\\ada\\Downloads\\Lab03\\cases\\missing\\data\\S2C_34UDA_20250605_0_L2A\\48e7066dc251\\red-59d7497b6d0acac9.tif",
+      "outcome": "succeeded",
+      "network_bytes": 2097153,
+      "saved_bytes": 75792
+    },
+    {
+      "subset_id": "f66f860d150ad4f0a41201bad30d12ab8f99fee60a4d3d25810569c6d44c6f0e",
+      "artifact_id": "fca9fc0ea7e68ceff3015929352513dbcdd0d9a9d9e5d75cb90ca393bc502adb",
+      "path": "C:\\Users\\ada\\Downloads\\Lab03\\cases\\missing\\data\\S2C_34UDA_20250605_0_L2A\\48e7066dc251\\nir-fca9fc0ea7e68cef.tif",
+      "outcome": "reused",
+      "network_bytes": 0
+    }
+  ]
+}
+
+(base) C:\Users\ada\Downloads\Lab03>python lab03_cli.py report --config cases/missing/config.json
+{
+  "database": "C:\\Users\\ada\\Downloads\\Lab03\\cases\\missing\\state\\catalogue.sqlite",
+  "attempts": [
+    {
+      "attempt_id": "attempt-10f6315f-db74-4299-aeaa-e1652803dc21",
+      "run_id": "lab03-b06d82f0-c96d-4993-9a26-3241adf8995d",
+      "item_id": "S2C_34UDA_20250605_0_L2A",
+      "asset_key": "red",
+      "aoi_key": "48e7066dc2510b10454cbc305c90ecb47f71c0966d733d6ab4ec2630c8745724",
+      "status": "succeeded",
+      "stage": "complete",
+      "network_bytes": 2097153,
+      "http_status": 206,
+      "error_code": null,
+      "error_message": null,
+      "artifact_id": "59d7497b6d0acac9cc3d487175e8d2cbd5d8612fbd1a58b9e37d8eb83d7c06e1",
+      "started_at": "2026-11-12T17:24:36.232019Z"
+    },
+    {
+      "attempt_id": "attempt-b769c8ef-87d6-480b-bd8b-71efd494ed47",
+      "run_id": "lab03-b06d82f0-c96d-4993-9a26-3241adf8995d",
+      "item_id": "S2C_34UDA_20250605_0_L2A",
+      "asset_key": "nir",
+      "aoi_key": "48e7066dc2510b10454cbc305c90ecb47f71c0966d733d6ab4ec2630c8745724",
+      "status": "succeeded",
+      "stage": "complete",
+      "network_bytes": 2097153,
+      "http_status": 206,
+      "error_code": null,
+      "error_message": null,
+      "artifact_id": "fca9fc0ea7e68ceff3015929352513dbcdd0d9a9d9e5d75cb90ca393bc502adb",
+      "started_at": "2026-11-12T17:24:47.155915Z"
+    },
+    {
+      "attempt_id": "attempt-fa944658-658a-4236-a2e9-13cff4e40758",
+      "run_id": "lab03-31f5127d-38c0-4fde-9b2d-afb176b26348",
+      "item_id": "S2C_34UDA_20250605_0_L2A",
+      "asset_key": "red",
+      "aoi_key": "48e7066dc2510b10454cbc305c90ecb47f71c0966d733d6ab4ec2630c8745724",
+      "status": "failed",
+      "stage": "cache_verify",
+      "network_bytes": 0,
+      "http_status": null,
+      "error_code": "FILE_MISSING",
+      "error_message": "Recorded file is absent: red-59d7497b6d0acac9.tif",
+      "artifact_id": "59d7497b6d0acac9cc3d487175e8d2cbd5d8612fbd1a58b9e37d8eb83d7c06e1",
+      "started_at": "2026-11-12T17:25:01.729722Z"
+    },
+    {
+      "attempt_id": "attempt-d6f4fdbe-721f-488f-aa76-7497661f7662",
+      "run_id": "lab03-31f5127d-38c0-4fde-9b2d-afb176b26348",
+      "item_id": "S2C_34UDA_20250605_0_L2A",
+      "asset_key": "nir",
+      "aoi_key": "48e7066dc2510b10454cbc305c90ecb47f71c0966d733d6ab4ec2630c8745724",
+      "status": "reused",
+      "stage": "cache_verify",
+      "network_bytes": 0,
+      "http_status": null,
+      "error_code": null,
+      "error_message": null,
+      "artifact_id": "fca9fc0ea7e68ceff3015929352513dbcdd0d9a9d9e5d75cb90ca393bc502adb",
+      "started_at": "2026-11-12T17:25:01.743815Z"
+    },
+    {
+      "attempt_id": "attempt-05dd38f7-2fce-4b29-9de4-f835bb42e42f",
+      "run_id": "lab03-23a1d8a6-ef3a-4a37-9db5-2c065c4e5ef0",
+      "item_id": "S2C_34UDA_20250605_0_L2A",
+      "asset_key": "red",
+      "aoi_key": "48e7066dc2510b10454cbc305c90ecb47f71c0966d733d6ab4ec2630c8745724",
+      "status": "failed",
+      "stage": "cache_verify",
+      "network_bytes": 0,
+      "http_status": null,
+      "error_code": "FILE_MISSING",
+      "error_message": "Recorded file is absent: red-59d7497b6d0acac9.tif",
+      "artifact_id": "59d7497b6d0acac9cc3d487175e8d2cbd5d8612fbd1a58b9e37d8eb83d7c06e1",
+      "started_at": "2026-11-12T17:25:34.062378Z"
+    },
+    {
+      "attempt_id": "attempt-ffd4271e-78ee-4022-853f-3d9528b2ad3e",
+      "run_id": "lab03-23a1d8a6-ef3a-4a37-9db5-2c065c4e5ef0",
+      "item_id": "S2C_34UDA_20250605_0_L2A",
+      "asset_key": "red",
+      "aoi_key": "48e7066dc2510b10454cbc305c90ecb47f71c0966d733d6ab4ec2630c8745724",
+      "status": "succeeded",
+      "stage": "complete",
+      "network_bytes": 2097153,
+      "http_status": 206,
+      "error_code": null,
+      "error_message": null,
+      "artifact_id": "59d7497b6d0acac9cc3d487175e8d2cbd5d8612fbd1a58b9e37d8eb83d7c06e1",
+      "started_at": "2026-11-12T17:25:34.076871Z"
+    },
+    {
+      "attempt_id": "attempt-3cc8ffb5-0751-4da8-90ad-fcdbbea87a9a",
+      "run_id": "lab03-23a1d8a6-ef3a-4a37-9db5-2c065c4e5ef0",
+      "item_id": "S2C_34UDA_20250605_0_L2A",
+      "asset_key": "nir",
+      "aoi_key": "48e7066dc2510b10454cbc305c90ecb47f71c0966d733d6ab4ec2630c8745724",
+      "status": "reused",
+      "stage": "cache_verify",
+      "network_bytes": 0,
+      "http_status": null,
+      "error_code": null,
+      "error_message": null,
+      "artifact_id": "fca9fc0ea7e68ceff3015929352513dbcdd0d9a9d9e5d75cb90ca393bc502adb",
+      "started_at": "2026-11-12T17:25:41.655000Z"
+    }
+  ],
+  "subsets": [
+    {
+      "subset_id": "5462fd6b1d071487ebf4f9872da69c339ad7568e2b9bd923d7e7ad1e40fb2e2b",
+      "asset_id": "d200bd3f0222f2ffeb3048b0ecf35731181a9b5eca9c66f280d9af95bfbad5a2",
+      "aoi_key": "48e7066dc2510b10454cbc305c90ecb47f71c0966d733d6ab4ec2630c8745724",
+      "status": "ready",
+      "latest_artifact_id": "59d7497b6d0acac9cc3d487175e8d2cbd5d8612fbd1a58b9e37d8eb83d7c06e1"
+    },
+    {
+      "subset_id": "f66f860d150ad4f0a41201bad30d12ab8f99fee60a4d3d25810569c6d44c6f0e",
+      "asset_id": "a2d220b3d0db776bd878281b88dd3d085be4ddc78042674be044110f202bdff8",
+      "aoi_key": "48e7066dc2510b10454cbc305c90ecb47f71c0966d733d6ab4ec2630c8745724",
+      "status": "ready",
+      "latest_artifact_id": "fca9fc0ea7e68ceff3015929352513dbcdd0d9a9d9e5d75cb90ca393bc502adb"
+    }
+  ],
+  "locations": [
+    {
+      "location_id": "629cba05b04c125e8e7c56d43019af96286b42d66b8bf0e55ad9d30cd33bf77f",
+      "artifact_id": "59d7497b6d0acac9cc3d487175e8d2cbd5d8612fbd1a58b9e37d8eb83d7c06e1",
+      "local_path": "C:\\Users\\ada\\Downloads\\Lab03\\cases\\missing\\data\\S2C_34UDA_20250605_0_L2A\\48e7066dc251\\red-59d7497b6d0acac9.tif",
+      "status": "available",
+      "checked_at": "2026-11-12T17:25:41.650289Z"
+    },
+    {
+      "location_id": "8c4afeb47dfde49c7c3d00cde21e9426e0d11c0540397ab503e0a800c9a6fa3e",
+      "artifact_id": "fca9fc0ea7e68ceff3015929352513dbcdd0d9a9d9e5d75cb90ca393bc502adb",
+      "local_path": "C:\\Users\\ada\\Downloads\\Lab03\\cases\\missing\\data\\S2C_34UDA_20250605_0_L2A\\48e7066dc251\\nir-fca9fc0ea7e68cef.tif",
+      "status": "available",
+      "checked_at": "2026-11-12T17:25:41.664424Z"
+    }
+  ],
+  "runs": [
+    {
+      "run_id": "lab03-b06d82f0-c96d-4993-9a26-3241adf8995d",
+      "command": "acquire",
+      "status": "succeeded",
+      "error": null,
+      "started_at": "2026-11-12T17:24:36.189543Z"
+    },
+    {
+      "run_id": "lab03-31f5127d-38c0-4fde-9b2d-afb176b26348",
+      "command": "verify",
+      "status": "failed",
+      "error": "One or more subsets are missing or invalid; inspect history and rerun acquire",
+      "started_at": "2026-11-12T17:25:01.718030Z"
+    },
+    {
+      "run_id": "lab03-23a1d8a6-ef3a-4a37-9db5-2c065c4e5ef0",
+      "command": "acquire",
+      "status": "succeeded",
+      "error": null,
+      "started_at": "2026-11-12T17:25:34.027782Z"
+    }
+  ]
+}
+
+(base) C:\Users\ada\Downloads\Lab03>
