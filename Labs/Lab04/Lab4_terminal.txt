@@ -1,0 +1,301 @@
+Windows PowerShell 5.1
+Copyright (C) Microsoft Corporation. All rights reserved.
+
+. : File C:\Users\ada\Documents\WindowsPowerShell\profile.ps1 cannot be loa
+ded because running scripts is disabled on this system. For more informatio
+n, see about_Execution_Policies at https:/go.microsoft.com/fwlink/?LinkID=1
+35170.
+At line:1 char:3
++ . 'C:\Users\ada\Documents\WindowsPowerShell\profile.ps1'
++   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+    + CategoryInfo          : SecurityError: (:) [], PSSecurityException
+    + FullyQualifiedErrorId : UnauthorizedAccess
+PS C:\Users\ada> cd "C:\Users\ada\Downloads\Lab04"
+PS C:\Users\ada\Downloads\Lab04> python check_lab04.py --part schema
+PASS schema
+PS C:\Users\ada\Downloads\Lab04> python check_lab04.py --part identity
+FAIL identity: AssertionError: State the equivalence policy explicitly
+PS C:\Users\ada\Downloads\Lab04> python check_lab04.py --part pair
+FAIL pair: AssertionError: Reject incompatible item_id even when shapes match
+PS C:\Users\ada\Downloads\Lab04> python check_lab04.py --part ndvi
+PASS ndvi
+PS C:\Users\ada\Downloads\Lab04> python check_lab04.py --part all
+PASS schema
+FAIL identity: AssertionError: State the equivalence policy explicitly
+FAIL pair: AssertionError: Reject incompatible item_id even when shapes match
+PASS ndvi
+PS C:\Users\ada\Downloads\Lab04> python check_lab04.py --part schema
+PASS schema
+PS C:\Users\ada\Downloads\Lab04> python check_lab04.py --part identity
+FAIL identity: AssertionError: State the equivalence policy explicitly
+PS C:\Users\ada\Downloads\Lab04> python check_lab04.py --part identity
+PASS identity
+PS C:\Users\ada\Downloads\Lab04> python check_lab04.py --part pair
+PASS pair
+PS C:\Users\ada\Downloads\Lab04> python check_lab04.py --part ndvi
+PASS ndvi
+PS C:\Users\ada\Downloads\Lab04> python check_lab04.py --part all
+PASS schema
+PASS identity
+PASS pair
+PASS ndvi
+PS C:\Users\ada\Downloads\Lab04> python lab04_cli.py init --from-lab3 "C:\Users\ada\Downloads\Lab03\state\catalogue.sqlite" --database state/catalogue.sqlite
+{
+  "database": "C:\\Users\\ada\\Downloads\\Lab04\\state\\catalogue.sqlite",
+  "status": "initialized"
+}
+PS C:\Users\ada\Downloads\Lab04> python lab04_cli.py inputs --database state/catalogue.sqlite
+[
+  {
+    "artifact_id": "input-fca9fc0ea7e68ceff3015929352513dbcdd0d9a9d9e5d75cb90ca393bc502adb",
+    "sha256": "94733ceb5a90b44961485d021290543635df521a4c1da4d6fbb79ef7ec5f7d72",
+    "item_id": "S2C_34UDA_20250605_0_L2A",
+    "band": "nir",
+    "aoi_key": "48e7066dc2510b10454cbc305c90ecb47f71c0966d733d6ab4ec2630c8745724",
+    "local_path": "C:\\Users\\ada\\Downloads\\Lab03\\data\\S2C_34UDA_20250605_0_L2A\\48e7066dc251\\nir-fca9fc0ea7e68cef.tif",
+    "status": "available"
+  },
+  {
+    "artifact_id": "input-59d7497b6d0acac9cc3d487175e8d2cbd5d8612fbd1a58b9e37d8eb83d7c06e1",
+    "sha256": "df429fb5eff330afe76e6dd0b7e749fba163e77dada3bdf6c6e18e430c601441",
+    "item_id": "S2C_34UDA_20250605_0_L2A",
+    "band": "red",
+    "aoi_key": "48e7066dc2510b10454cbc305c90ecb47f71c0966d733d6ab4ec2630c8745724",
+    "local_path": "C:\\Users\\ada\\Downloads\\Lab03\\data\\S2C_34UDA_20250605_0_L2A\\48e7066dc251\\red-59d7497b6d0acac9.tif",
+    "status": "available"
+  }
+]
+PS C:\Users\ada\Downloads\Lab04> python lab04_cli.py configure --database state/catalogue.sqlite --out config/ndvi.yml
+{
+  "config": "C:\\Users\\ada\\Downloads\\Lab04\\config\\ndvi.yml",
+  "inputs": {
+    "red": "input-59d7497b6d0acac9cc3d487175e8d2cbd5d8612fbd1a58b9e37d8eb83d7c06e1",
+    "nir": "input-fca9fc0ea7e68ceff3015929352513dbcdd0d9a9d9e5d75cb90ca393bc502adb"
+  },
+  "scaling": "reviewed_calibration",
+  "calibration_review": "Read CALIBRATION_REVIEW.md before running this sample"
+}
+PS C:\Users\ada\Downloads\Lab04> python lab04_cli.py configure --database state/catalogue.sqlite --red YOUR_RED_ARTIFACT_ID --nir YOUR_NIR_ARTIFACT_ID --out config/ndvi.yml
+{
+  "status": "configuration_or_setup_failed",
+  "error_code": "ValueError",
+  "error": "Unknown artifact ID: YOUR_RED_ARTIFACT_ID; run init after finishing Lab 3 acquisition"
+}
+PS C:\Users\ada\Downloads\Lab04> python lab04_cli.py plan --config config/ndvi.yml
+{
+  "request_id": "request-8478361a208e10cb8f36f993ef61164e19a70f24560696fecb80252d2daa8676",
+  "normalized_spec": {
+    "spec_version": 1,
+    "equivalence_policy": "exact_environment_v1",
+    "stage": "ndvi_v1",
+    "settings": {
+      "stage": "ndvi_v1",
+      "grid_policy": "require_match",
+      "scaling": "reviewed_calibration",
+      "mask_policy": "nodata_only",
+      "denominator_epsilon": 1e-06,
+      "min_valid_fraction": 0.1,
+      "calibration": {
+        "red": {
+          "sha256": "df429fb5eff330afe76e6dd0b7e749fba163e77dada3bdf6c6e18e430c601441",
+          "scale": 0.0001,
+          "offset": 0,
+          "evidence": "Lab04 CALIBRATION_REVIEW.md: exact captured COG subsets; provider boa_offset_applied=true and DN distributions support offset 0.Teaching interpretation; no independent JP2 radiometric comparison."
+        },
+        "nir": {
+          "sha256": "94733ceb5a90b44961485d021290543635df521a4c1da4d6fbb79ef7ec5f7d72",
+          "scale": 0.0001,
+          "offset": 0,
+          "evidence": "Lab04 CALIBRATION_REVIEW.md: exact captured COG subsets; provider boa_offset_applied=true and DN distributions support offset 0.Teaching interpretation; no independent JP2 radiometric comparison."
+        }
+      },
+      "inputs": {
+        "red": "input-59d7497b6d0acac9cc3d487175e8d2cbd5d8612fbd1a58b9e37d8eb83d7c06e1",
+        "nir": "input-fca9fc0ea7e68ceff3015929352513dbcdd0d9a9d9e5d75cb90ca393bc502adb"
+      }
+    },
+    "inputs": [
+      {
+        "role": "nir",
+        "artifact_id": "input-fca9fc0ea7e68ceff3015929352513dbcdd0d9a9d9e5d75cb90ca393bc502adb",
+        "sha256": "94733ceb5a90b44961485d021290543635df521a4c1da4d6fbb79ef7ec5f7d72",
+        "size_bytes": 76138,
+        "lineage": {
+          "aoi": {
+            "bbox": [
+              19.91,
+              50.04,
+              19.94,
+              50.06
+            ],
+            "crs": "EPSG:4326"
+          },
+          "aoi_key": "48e7066dc2510b10454cbc305c90ecb47f71c0966d733d6ab4ec2630c8745724",
+          "asset_id": "a2d220b3d0db776bd878281b88dd3d085be4ddc78042674be044110f202bdff8",
+          "asset_key": "nir",
+          "collection": "sentinel-2-l2a",
+          "item_id": "S2C_34UDA_20250605_0_L2A",
+          "metadata_sha256": "031a9020d0b96713e0fd07cd10611630612b20f21220e5396591bdc8fc798e35",
+          "recipe_version": "native10m-wgs84-mask-v1",
+          "source_url": "https://sentinel-cogs.s3.us-west-2.amazonaws.com/sentinel-s2-l2a-cogs/34/U/DA/2025/6/S2C_34UDA_20250605_0_L2A/B08.tif",
+          "subset_id": "f66f860d150ad4f0a41201bad30d12ab8f99fee60a4d3d25810569c6d44c6f0e"
+        },
+        "raster": {
+          "aoi_bbox": [
+            19.91,
+            50.04,
+            19.94,
+            50.06
+          ],
+          "asset_key": "nir",
+          "crs": "EPSG:32634",
+          "dtype": "uint16",
+          "nodata": 0,
+          "offset": -0.1,
+          "raw_pixel_bytes": 99426,
+          "recipe": "native10m-wgs84-mask-v1",
+          "scale": 0.0001,
+          "shape": [
+            227,
+            219
+          ],
+          "source_shape": [
+            10980,
+            10980
+          ],
+          "source_transform": [
+            10,
+            0,
+            399960,
+            0,
+            -10,
+            5600040
+          ],
+          "source_url": "https://sentinel-cogs.s3.us-west-2.amazonaws.com/sentinel-s2-l2a-cogs/34/U/DA/2025/6/S2C_34UDA_20250605_0_L2A/B08.tif",
+          "transform": [
+            10,
+            0,
+            421940,
+            0,
+            -10,
+            5545880
+          ],
+          "window": [
+            2198,
+            5416,
+            219,
+            227
+          ]
+        }
+      },
+      {
+        "role": "red",
+        "artifact_id": "input-59d7497b6d0acac9cc3d487175e8d2cbd5d8612fbd1a58b9e37d8eb83d7c06e1",
+        "sha256": "df429fb5eff330afe76e6dd0b7e749fba163e77dada3bdf6c6e18e430c601441",
+        "size_bytes": 75792,
+        "lineage": {
+          "aoi": {
+            "bbox": [
+              19.91,
+              50.04,
+              19.94,
+              50.06
+            ],
+            "crs": "EPSG:4326"
+          },
+          "aoi_key": "48e7066dc2510b10454cbc305c90ecb47f71c0966d733d6ab4ec2630c8745724",
+          "asset_id": "d200bd3f0222f2ffeb3048b0ecf35731181a9b5eca9c66f280d9af95bfbad5a2",
+          "asset_key": "red",
+          "collection": "sentinel-2-l2a",
+          "item_id": "S2C_34UDA_20250605_0_L2A",
+          "metadata_sha256": "bc5625ecfe6d39ea02a1cf4af5afb786b253023f7c6a86fe0e60ae5450fcff7a",
+          "recipe_version": "native10m-wgs84-mask-v1",
+          "source_url": "https://sentinel-cogs.s3.us-west-2.amazonaws.com/sentinel-s2-l2a-cogs/34/U/DA/2025/6/S2C_34UDA_20250605_0_L2A/B04.tif",
+          "subset_id": "5462fd6b1d071487ebf4f9872da69c339ad7568e2b9bd923d7e7ad1e40fb2e2b"
+        },
+        "raster": {
+          "aoi_bbox": [
+            19.91,
+            50.04,
+            19.94,
+            50.06
+          ],
+          "asset_key": "red",
+          "crs": "EPSG:32634",
+          "dtype": "uint16",
+          "nodata": 0,
+          "offset": -0.1,
+          "raw_pixel_bytes": 99426,
+          "recipe": "native10m-wgs84-mask-v1",
+          "scale": 0.0001,
+          "shape": [
+            227,
+            219
+          ],
+          "source_shape": [
+            10980,
+            10980
+          ],
+          "source_transform": [
+            10,
+            0,
+            399960,
+            0,
+            -10,
+            5600040
+          ],
+          "source_url": "https://sentinel-cogs.s3.us-west-2.amazonaws.com/sentinel-s2-l2a-cogs/34/U/DA/2025/6/S2C_34UDA_20250605_0_L2A/B04.tif",
+          "transform": [
+            10,
+            0,
+            421940,
+            0,
+            -10,
+            5545880
+          ],
+          "window": [
+            2198,
+            5416,
+            219,
+            227
+          ]
+        }
+      }
+    ],
+    "environment": {
+      "policy": "exact_environment_v1",
+      "python": "3.14.5",
+      "system": "Windows",
+      "machine": "AMD64",
+      "numpy": "2.5.5",
+      "rasterio": "1.5.2",
+      "gdal": "3.12.2",
+      "proj": "9.7.1",
+      "pyyaml": "6.0.3",
+      "code_sha256": {
+        "repair_functions.py": "9bd2bb83036af6e9f15e2781e31c0a6cf8e7b18071c2eef0a075d824bd3f838b",
+        "ndvi_job.py": "27296ee84ae8a52aadfbf983316a515d397e5cc7211d237059513ddfb6c1b964",
+        "processing_store.py": "0f4eb235caf705e8e77a4a2c674580cc71ed94f438a34579481143fd2c0da68d",
+        "lab04_cli.py": "4a3f1b1d5d868e2db9ce2680d2add830a14fa30860a21b870f8741a77a7c8474"
+      }
+    }
+  },
+  "writes_database": false
+}
+PS C:\Users\ada\Downloads\Lab04> python lab04_cli.py run --config config/ndvi.yml
+{
+  "status": "failed",
+  "request_id": "request-8478361a208e10cb8f36f993ef61164e19a70f24560696fecb80252d2daa8676",
+  "attempt_id": "attempt-b3695c4c438a43e292da27c1daa415e9",
+  "error_code": "ValueError",
+  "error": "Raster header disagrees with registered crs"
+}
+PS C:\Users\ada\Downloads\Lab04> python lab04_cli.py run --config config/ndvi.yml --force
+{
+  "status": "failed",
+  "request_id": "request-8478361a208e10cb8f36f993ef61164e19a70f24560696fecb80252d2daa8676",
+  "attempt_id": "attempt-e65f332da6914099a036c0856c188bce",
+  "error_code": "ValueError",
+  "error": "Raster header disagrees with registered crs"
+}
+PS C:\Users\ada\Downloads\Lab04>
